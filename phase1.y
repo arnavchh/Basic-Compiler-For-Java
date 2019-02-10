@@ -4,7 +4,7 @@
 int valid = 1 ; 
 %}
 
-%token letter digit Type Semicolon keyword
+%token letter digit Type Semicolon keyword	expression_oper
 
 %%
 start : Type Identifier Semicolon
@@ -22,6 +22,27 @@ s :     letter s
       |
 
       ;
+      
+statement : "{" statement "}"
+					|	statement
+					|	"if" "(" Expression ")" statement "else" statement
+					|	Identifier "=" Expression ","
+					|	Identifier "[" Expression "]" "=" Expression ","
+					| "do" statement "while" "(" Expression ")" semicolon
+					 
+Expression	:	Expression expression_oper Expression
+						|	Expression "[" Expression "]"
+						|	Expression "." "length"
+						|	Expression "." Identifier "(" Expression (","Expression )*)? ")"
+						|	digit
+						|	Identifier
+						|	"True"
+						|	"False"
+						|	"this"
+						|	"new" "int" "[" Expression "]"
+						|	"new" Identifier "(" ")"
+						|	"!" Expression
+						|	"(" Expression ")"
 %%
 
 

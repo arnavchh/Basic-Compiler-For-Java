@@ -7,6 +7,7 @@
 ("int "|"char "|"boolean ") {return Type;}
 [a-zA-Z][a-zA-Z_0-9]* return letter;
 [0-9] return digit;
+("+"|"-"|"*"|"/"|"<"|"&&"|"||") return expression_oper
 ";" return Semicolon;
 . return yytext[0];
 \n return 0;
