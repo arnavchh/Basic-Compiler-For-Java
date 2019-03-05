@@ -95,13 +95,14 @@ start = 'start'
 
 def p_start(p):
     ''' start : PUBLIC CLASS NAME '{' main_body '}'
-              | PRIVATE CLASS NAME '{' body '}'
-              | PROTECTED CLASS NAME '{' body '}'
-              | CLASS NAME '{' body '}'
+              | PRIVATE CLASS NAME '{' main_body '}'
+              | PROTECTED CLASS NAME '{' main_body '}'
+              | CLASS NAME '{' main_body '}'
               | main_body '''
 
 def p_main_body(p):
-    ''' main_body : PUBLIC STATIC VOID MAIN '(' STRING ARGS ')' '{' body '}' '''
+    ''' main_body : PUBLIC STATIC VOID MAIN '(' STRING ARGS ')' '{' body '}' 
+                  | body '''
 
 def p_body(p):
     ''' body : statements '''
@@ -112,13 +113,21 @@ def p_statements(p):
 
 def p_statement_do_while(p):
     ''' statement : DO '{' statements '}' WHILE '(' expression ')' ';' '''
-def p_statement_if(p):
-    ''' statement : IF '(' expression ')' '{' statements '}' 
-                  | IF '(' expression ')' statement '''
 
-def p_statement_if_else(p):
-    ''' statement : IF '(' expression ')' '{' statements '}' ELSE '{' statements '}' 
-                  | IF '(' expression ')' statement ELSE '{' statements '}' '''
+def p_else_if_block(p):
+    ''' else_if : ELSE IF '(' expression ')' '{' statements '}' else_if
+                | ELSE IF '(' expression ')' statement else_if 
+                | ELSE '{' statements '}' 
+                | ELSE statement
+                | '''
+
+def p_statement_if(p):
+    ''' statement : IF '(' expression ')' '{' statements '}' else_if
+                  | IF '(' expression ')' statement else_if '''
+
+# def p_statement_if_else(p):
+#     ''' statement : IF '(' expression ')' '{' statements '}' ELSE '{' statements '}' 
+#                   | IF '(' expression ')' statement ELSE '{' statements '}' '''
        
 
 def p_statement_declare(p):
@@ -166,7 +175,7 @@ def p_statement_assign(p):
 
 
 def p_statement_expr(p):
-    'statement : expression ";" '
+    '''statement : expression ";" '''
     print(p[1])
 
 def p_expr_boolean(p):
@@ -230,25 +239,25 @@ def p_operation_equals(p):
         symbol_table[p[1]][5] = names[p[1]]
 
 def p_expression_not(p):
-    "expression : '!' expression"
+    '''expression : '!' expression'''
     p[0] = not (p[2])
 
 def p_expression_uminus(p):
-    "expression : '-' expression %prec UMINUS"
+    '''expression : '-' expression %prec UMINUS'''
     p[0] = -p[2]
 
 def p_expression_group(p):
-    "expression : '(' expression ')'"
+    '''expression : '(' expression ')' '''
     p[0] = p[2]
 
 
 def p_expression_number(p):
-    "expression : NUMBER"
+    '''expression : NUMBER'''
     p[0] = p[1]
 
 
 def p_expression_name(p):
-    "expression : NAME"
+    '''expression : NAME'''
     try:
         p[0] = names[p[1]]
     except LookupError:
@@ -270,7 +279,8 @@ scope_level = 0
 while True:
     tok = lex.token()
     if not tok:
-        print(symbol_table) 
+        # print(tok)
+        # print(symbol_table) 
         break
     else:
         token = (tok.type, tok.value, tok.lineno)
@@ -292,4 +302,5 @@ while True:
              symbol_table[tok.value] = token
 
 yacc.parse(s)
+# print("Here")
 print(symbol_table)
