@@ -58,11 +58,11 @@ def t_NUMBER(t):
     r'\d+'
     t.value = int(t.value)
     return t
-
-
+count  = 0 
 def t_newline(t):
     r'\n+'
-    t.lexer.lineno += t.value.count("\n")
+    t.lexer.lineno += len(t.value)
+
 
 
 def t_error(t):
@@ -75,6 +75,7 @@ lexer = lex.lex()
 
 f = open(sys.argv[1],"r")
 s=f.read()
+print(s.count("\n"));
 lexer.input(s)
 
 # Parsing rules
@@ -267,7 +268,8 @@ def p_expression_name(p):
 
 def p_error(p):
     if p:
-        print("Syntax error at '%s'" % p.lineno)
+        error_line_no = p.lineno - s.count("\n")-1
+        print("Syntax error at line number '%s'" % error_line_no)
     else:
         print("Syntax error at EOF")
 
