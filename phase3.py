@@ -374,7 +374,6 @@ def p_statement_init(p):
         
     global vcount
     #global l1
-
     q=[]
     
     if(p[2]=='='):
@@ -418,6 +417,7 @@ def p_expression_binop(p):
                   | expression '*' expression
                   | expression '/' expression'''
     global l1
+    l1=[]
     l1.append(p[1])
     l1.append(p[3])
     print(l1)
